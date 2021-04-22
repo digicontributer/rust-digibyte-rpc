@@ -1,24 +1,25 @@
 [package]
-name = "bitcoincore-rpc-json"
+name = "digibyte-rpc-json"
 version = "0.13.0"
 authors = [
     "Steven Roose <steven@stevenroose.org>",
     "Jean Pierre Dudey <jeandudey@hotmail.com>",
-    "Dawid Ciężarkiewicz <dpc@dpc.pw>"
+    "Dawid Ciężarkiewicz <dpc@dpc.pw>",
+    "Gary Mckee <gary@lifehash.com>"
 ]
 license = "CC0-1.0"
-homepage = "https://github.com/rust-bitcoin/rust-bitcoincore-rpc/"
-repository = "https://github.com/rust-bitcoin/rust-bitcoincore-rpc/"
-description = "JSON-enabled type structs for bitcoincore-rpc crate."
-keywords = [ "crypto", "bitcoin", "bitcoin-core", "rpc" ]
+homepage = "https://github.com/digibytecontributer/rust-digibyte-rpc/"
+repository = "https://github.com/digicontributer/rust-digibyte-rpc/"
+description = "JSON-enabled type structs for digibyte-rpc crate."
+keywords = [ "crypto", "digibyte", "rpc" ]
 readme = "README.md"
 
 [lib]
-name = "bitcoincore_rpc_json"
+name = "digibyte_rpc_json"
 path = "src/lib.rs"
 
 [dependencies]
 serde = { version = "1", features = [ "derive" ] }
 serde_json = "1"
 
-bitcoin = { version = "0.26", features = [ "use-serde" ] }
+digibyte = { version = "0.27", features = [ "use-serde" ] }

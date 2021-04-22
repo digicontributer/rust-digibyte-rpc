@@ -4,7 +4,7 @@ set -xe
 # Just echo all the relevant env vars to help debug Travis.
 echo "TRAVIS_RUST_VERSION: \"$TRAVIS_RUST_VERSION\""
 echo "RUSTFMTCHECK: \"$RUSTFMTCHECK\""
-echo "BITCOINVERSION: \"$BITCOINVERSION\""
+echo "DIGIBYTEVERSION: \"$DIGIBYTEVERSION\""
 echo "PATH: \"$PATH\""
 
 
@@ -31,7 +31,7 @@ if [ -n "$RUSTFMTCHECK" ]; then
 fi
 
 # Integration test.
-if [ -n "$BITCOINVERSION" ]; then
+if [ -n "$DIGIBYTEVERSION" ]; then
     wget https://bitcoincore.org/bin/bitcoin-core-$BITCOINVERSION/bitcoin-$BITCOINVERSION-x86_64-linux-gnu.tar.gz
     tar -xzvf bitcoin-$BITCOINVERSION-x86_64-linux-gnu.tar.gz
     export PATH=$PATH:$(pwd)/bitcoin-$BITCOINVERSION/bin

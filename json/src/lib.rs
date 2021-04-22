@@ -13,10 +13,10 @@
 //! This is a client library for the Bitcoin Core JSON-RPC API.
 //!
 
-#![crate_name = "bitcoincore_rpc_json"]
+#![crate_name = "digibyte_rpc_json"]
 #![crate_type = "rlib"]
 
-pub extern crate bitcoin;
+pub extern crate digibyte;
 #[allow(unused)]
 #[macro_use] // `macro_use` is needed for v1.24.0 compilation.
 extern crate serde;
@@ -24,11 +24,11 @@ extern crate serde_json;
 
 use std::collections::HashMap;
 
-use bitcoin::consensus::encode;
-use bitcoin::hashes::hex::{FromHex, ToHex};
-use bitcoin::hashes::sha256;
-use bitcoin::util::{bip158, bip32};
-use bitcoin::{Address, Amount, PrivateKey, PublicKey, Script, SignedAmount, Transaction};
+use digibyte::consensus::encode;
+use digibyte::hashes::hex::{FromHex, ToHex};
+use digibyte::hashes::sha256;
+use digibyte::util::{bip158, bip32};
+use digibyte::{Address, Amount, PrivateKey, PublicKey, Script, SignedAmount, Transaction};
 use serde::de::Error as SerdeError;
 use serde::{Deserialize, Serialize};
 
@@ -38,7 +38,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// The module is compatible with the serde attribute.
 pub mod serde_hex {
-    use bitcoin::hashes::hex::{FromHex, ToHex};
+    use digibyte::hashes::hex::{FromHex, ToHex};
     use serde::de::Error;
     use serde::{Deserializer, Serializer};
 
@@ -52,7 +52,7 @@ pub mod serde_hex {
     }
 
     pub mod opt {
-        use bitcoin::hashes::hex::{FromHex, ToHex};
+        use digibyte::hashes::hex::{FromHex, ToHex};
         use serde::de::Error;
         use serde::{Deserializer, Serializer};
 
@@ -108,9 +108,9 @@ pub struct GetNetworkInfoResult {
     #[serde(rename = "networkactive")]
     pub network_active: bool,
     pub networks: Vec<GetNetworkInfoResultNetwork>,
-    #[serde(rename = "relayfee", with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(rename = "relayfee", with = "digibyte::util::amount::serde::as_dgb")]
     pub relay_fee: Amount,
-    #[serde(rename = "incrementalfee", with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(rename = "incrementalfee", with = "digibyte::util::amount::serde::as_dgb")]
     pub incremental_fee: Amount,
     #[serde(rename = "localaddresses")]
     pub local_addresses: Vec<GetNetworkInfoResultAddress>,
@@ -136,11 +136,11 @@ pub struct GetWalletInfoResult {
     pub wallet_name: String,
     #[serde(rename = "walletversion")]
     pub wallet_version: u32,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub balance: Amount,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub unconfirmed_balance: Amount,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub immature_balance: Amount,
     #[serde(rename = "txcount")]
     pub tx_count: usize,
@@ -151,10 +151,10 @@ pub struct GetWalletInfoResult {
     #[serde(rename = "keypoolsize_hd_internal")]
     pub keypool_size_hd_internal: usize,
     pub unlocked_until: Option<u64>,
-    #[serde(rename = "paytxfee", with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(rename = "paytxfee", with = "digibyte::util::amount::serde::as_dgb")]
     pub pay_tx_fee: Amount,
     #[serde(rename = "hdseedid")]
-    pub hd_seed_id: Option<bitcoin::XpubIdentifier>,
+    pub hd_seed_id: Option<digibyte::XpubIdentifier>,
     pub private_keys_enabled: bool,
     pub avoid_reuse: Option<bool>,
     pub scanning: Option<ScanningDetails>,
@@ -176,7 +176,7 @@ impl Eq for ScanningDetails {}
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetBlockResult {
-    pub hash: bitcoin::BlockHash,
+    pub hash: digibyte::BlockHash,
     pub confirmations: i32,
     pub size: usize,
     pub strippedsize: Option<usize>,
@@ -185,8 +185,8 @@ pub struct GetBlockResult {
     pub version: i32,
     #[serde(default, with = "::serde_hex::opt")]
     pub version_hex: Option<Vec<u8>>,
-    pub merkleroot: bitcoin::TxMerkleNode,
-    pub tx: Vec<bitcoin::Txid>,
+    pub merkleroot: digibyte::TxMerkleNode,
+    pub tx: Vec<digibyte::Txid>,
     pub time: usize,
     pub mediantime: Option<usize>,
     pub nonce: u32,
@@ -195,21 +195,21 @@ pub struct GetBlockResult {
     #[serde(with = "::serde_hex")]
     pub chainwork: Vec<u8>,
     pub n_tx: usize,
-    pub previousblockhash: Option<bitcoin::BlockHash>,
-    pub nextblockhash: Option<bitcoin::BlockHash>,
+    pub previousblockhash: Option<digibyte::BlockHash>,
+    pub nextblockhash: Option<digibyte::BlockHash>,
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetBlockHeaderResult {
-    pub hash: bitcoin::BlockHash,
+    pub hash: digibyte::BlockHash,
     pub confirmations: i32,
     pub height: usize,
     pub version: i32,
     #[serde(default, with = "::serde_hex::opt")]
     pub version_hex: Option<Vec<u8>>,
     #[serde(rename = "merkleroot")]
-    pub merkle_root: bitcoin::TxMerkleNode,
+    pub merkle_root: digibyte::TxMerkleNode,
     pub time: usize,
     #[serde(rename = "mediantime")]
     pub median_time: Option<usize>,
@@ -220,9 +220,9 @@ pub struct GetBlockHeaderResult {
     pub chainwork: Vec<u8>,
     pub n_tx: usize,
     #[serde(rename = "previousblockhash")]
-    pub previous_block_hash: Option<bitcoin::BlockHash>,
+    pub previous_block_hash: Option<digibyte::BlockHash>,
     #[serde(rename = "nextblockhash")]
-    pub next_block_hash: Option<bitcoin::BlockHash>,
+    pub next_block_hash: Option<digibyte::BlockHash>,
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
@@ -264,7 +264,7 @@ pub struct GetRawTransactionResultVin {
     #[serde(default, with = "::serde_hex::opt")]
     pub coinbase: Option<Vec<u8>>,
     /// Not provided for coinbase txs.
-    pub txid: Option<bitcoin::Txid>,
+    pub txid: Option<digibyte::Txid>,
     /// Not provided for coinbase txs.
     pub vout: Option<u32>,
     /// The scriptSig in case of a non-coinbase tx.
@@ -304,7 +304,7 @@ impl GetRawTransactionResultVoutScriptPubKey {
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetRawTransactionResultVout {
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub value: Amount,
     pub n: u32,
     pub script_pub_key: GetRawTransactionResultVoutScriptPubKey,
@@ -317,15 +317,15 @@ pub struct GetRawTransactionResult {
     pub in_active_chain: Option<bool>,
     #[serde(with = "::serde_hex")]
     pub hex: Vec<u8>,
-    pub txid: bitcoin::Txid,
-    pub hash: bitcoin::Wtxid,
+    pub txid: digibyte::Txid,
+    pub hash: digibyte::Wtxid,
     pub size: usize,
     pub vsize: usize,
     pub version: u32,
     pub locktime: u32,
     pub vin: Vec<GetRawTransactionResultVin>,
     pub vout: Vec<GetRawTransactionResultVout>,
-    pub blockhash: Option<bitcoin::BlockHash>,
+    pub blockhash: Option<digibyte::BlockHash>,
     pub confirmations: Option<u32>,
     pub time: Option<usize>,
     pub blocktime: Option<usize>,
@@ -333,7 +333,7 @@ pub struct GetRawTransactionResult {
 
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct GetBlockFilterResult {
-    pub header: bitcoin::FilterHash,
+    pub header: digibyte::FilterHash,
     #[serde(with = "::serde_hex")]
     pub filter: Vec<u8>,
 }
@@ -389,11 +389,11 @@ pub enum GetTransactionResultDetailCategory {
 pub struct GetTransactionResultDetail {
     pub address: Option<Address>,
     pub category: GetTransactionResultDetailCategory,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub amount: SignedAmount,
     pub label: Option<String>,
     pub vout: u32,
-    #[serde(default, with = "bitcoin::util::amount::serde::as_btc::opt")]
+    #[serde(default, with = "digibyte::util::amount::serde::as_dgb::opt")]
     pub fee: Option<SignedAmount>,
     pub abandoned: Option<bool>,
 }
@@ -401,27 +401,27 @@ pub struct GetTransactionResultDetail {
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize)]
 pub struct WalletTxInfo {
     pub confirmations: i32,
-    pub blockhash: Option<bitcoin::BlockHash>,
+    pub blockhash: Option<digibyte::BlockHash>,
     pub blockindex: Option<usize>,
     pub blocktime: Option<u64>,
     pub blockheight: Option<u32>,
-    pub txid: bitcoin::Txid,
+    pub txid: digibyte::Txid,
     pub time: u64,
     pub timereceived: u64,
     #[serde(rename = "bip125-replaceable")]
     pub bip125_replaceable: Bip125Replaceable,
     /// Conflicting transaction ids
     #[serde(rename = "walletconflicts")]
-    pub wallet_conflicts: Vec<bitcoin::Txid>,
+    pub wallet_conflicts: Vec<digibyte::Txid>,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize)]
 pub struct GetTransactionResult {
     #[serde(flatten)]
     pub info: WalletTxInfo,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub amount: SignedAmount,
-    #[serde(default, with = "bitcoin::util::amount::serde::as_btc::opt")]
+    #[serde(default, with = "digibyte::util::amount::serde::as_dgb::opt")]
     pub fee: Option<SignedAmount>,
     pub details: Vec<GetTransactionResultDetail>,
     #[serde(with = "::serde_hex")]
@@ -450,15 +450,15 @@ pub struct ListSinceBlockResult {
     pub transactions: Vec<ListTransactionResult>,
     #[serde(default)]
     pub removed: Vec<ListTransactionResult>,
-    pub lastblock: bitcoin::BlockHash,
+    pub lastblock: digibyte::BlockHash,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetTxOutResult {
-    pub bestblock: bitcoin::BlockHash,
+    pub bestblock: digibyte::BlockHash,
     pub confirmations: u32,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub value: Amount,
     pub script_pub_key: GetRawTransactionResultVoutScriptPubKey,
     pub coinbase: bool,
@@ -469,13 +469,13 @@ pub struct GetTxOutResult {
 pub struct ListUnspentQueryOptions {
     #[serde(
         rename = "minimumAmount",
-        with = "bitcoin::util::amount::serde::as_btc::opt",
+        with = "digibyte::util::amount::serde::as_dgb::opt",
         skip_serializing_if = "Option::is_none"
     )]
     pub minimum_amount: Option<Amount>,
     #[serde(
         rename = "maximumAmount",
-        with = "bitcoin::util::amount::serde::as_btc::opt",
+        with = "digibyte::util::amount::serde::as_dgb::opt",
         skip_serializing_if = "Option::is_none"
     )]
     pub maximum_amount: Option<Amount>,
@@ -483,7 +483,7 @@ pub struct ListUnspentQueryOptions {
     pub maximum_count: Option<usize>,
     #[serde(
         rename = "minimumSumAmount",
-        with = "bitcoin::util::amount::serde::as_btc::opt",
+        with = "digibyte::util::amount::serde::as_dgb::opt",
         skip_serializing_if = "Option::is_none"
     )]
     pub minimum_sum_amount: Option<Amount>,
@@ -492,14 +492,14 @@ pub struct ListUnspentQueryOptions {
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ListUnspentResultEntry {
-    pub txid: bitcoin::Txid,
+    pub txid: digibyte::Txid,
     pub vout: u32,
     pub address: Option<Address>,
     pub label: Option<String>,
     pub redeem_script: Option<Script>,
     pub witness_script: Option<Script>,
     pub script_pub_key: Script,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub amount: Amount,
     pub confirmations: u32,
     pub spendable: bool,
@@ -515,17 +515,17 @@ pub struct ListReceivedByAddressResult {
     #[serde(default, rename = "involvesWatchonly")]
     pub involved_watch_only: bool,
     pub address: Address,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub amount: Amount,
     pub confirmations: u32,
     pub label: String,
-    pub txids: Vec<bitcoin::Txid>,
+    pub txids: Vec<digibyte::Txid>,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SignRawTransactionResultError {
-    pub txid: bitcoin::Txid,
+    pub txid: digibyte::Txid,
     pub vout: u32,
     pub script_sig: Script,
     pub sequence: u32,
@@ -549,7 +549,7 @@ impl SignRawTransactionResult {
 
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct TestMempoolAcceptResult {
-    pub txid: bitcoin::Txid,
+    pub txid: digibyte::Txid,
     pub allowed: bool,
     #[serde(rename = "reject-reason")]
     pub reject_reason: Option<String>,
@@ -564,7 +564,7 @@ pub struct TestMempoolAcceptResult {
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct TestMempoolAcceptResultFees {
     /// Transaction fee in BTC
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub base: Amount,
     // unlike GetMempoolEntryResultFees, this only has the `base` fee
 }
@@ -657,7 +657,7 @@ pub struct GetAddressInfoResultEmbedded {
     #[serde(rename = "hdkeypath")]
     pub hd_key_path: Option<bip32::DerivationPath>,
     #[serde(rename = "hdseedid")]
-    pub hd_seed_id: Option<bitcoin::XpubIdentifier>,
+    pub hd_seed_id: Option<digibyte::XpubIdentifier>,
     #[serde(default)]
     pub labels: Vec<GetAddressInfoResultLabel>,
 }
@@ -711,7 +711,7 @@ pub struct GetAddressInfoResult {
     #[serde(rename = "hdkeypath")]
     pub hd_key_path: Option<bip32::DerivationPath>,
     #[serde(rename = "hdseedid")]
-    pub hd_seed_id: Option<bitcoin::XpubIdentifier>,
+    pub hd_seed_id: Option<digibyte::XpubIdentifier>,
     pub labels: Vec<GetAddressInfoResultLabel>,
     /// Deprecated in v0.20.0. See `labels` field instead.
     #[deprecated(note = "since Core v0.20.0")]
@@ -729,7 +729,7 @@ pub struct GetBlockchainInfoResult {
     pub headers: u64,
     /// The hash of the currently best block
     #[serde(rename = "bestblockhash")]
-    pub best_block_hash: bitcoin::BlockHash,
+    pub best_block_hash: digibyte::BlockHash,
     /// The current difficulty
     pub difficulty: f64,
     /// Median time for the current best block
@@ -793,14 +793,14 @@ pub struct GetMempoolEntryResult {
     #[serde(rename = "ancestorsize")]
     pub ancestor_size: u64,
     /// Hash of serialized transaction, including witness data
-    pub wtxid: bitcoin::Txid,
+    pub wtxid: digibyte::Txid,
     /// Fee information
     pub fees: GetMempoolEntryResultFees,
     /// Unconfirmed transactions used as inputs for this transaction
-    pub depends: Vec<bitcoin::Txid>,
+    pub depends: Vec<digibyte::Txid>,
     /// Unconfirmed transactions spending outputs from this transaction
     #[serde(rename = "spentby")]
-    pub spent_by: Vec<bitcoin::Txid>,
+    pub spent_by: Vec<digibyte::Txid>,
     /// Whether this transaction could be replaced due to BIP125 (replace-by-fee)
     #[serde(rename = "bip125-replaceable")]
     pub bip125_replaceable: bool,
@@ -812,16 +812,16 @@ pub struct GetMempoolEntryResult {
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct GetMempoolEntryResultFees {
     /// Transaction fee in BTC
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub base: Amount,
     /// Transaction fee with fee deltas used for mining priority in BTC
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub modified: Amount,
     /// Modified fees (see above) of in-mempool ancestors (including this one) in BTC
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub ancestor: Amount,
     /// Modified fees (see above) of in-mempool descendants (including this one) in BTC
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub descendant: Amount,
 }
 
@@ -1054,7 +1054,7 @@ pub struct GetPeerInfoResult {
     /// Whether the peer is whitelisted
     /// Deprecated in Bitcoin Core v0.21
     pub whitelisted: Option<bool>,
-    #[serde(rename = "minfeefilter", default, with = "bitcoin::util::amount::serde::as_btc::opt")]
+    #[serde(rename = "minfeefilter", default, with = "digibyte::util::amount::serde::as_dgb::opt")]
     pub min_fee_filter: Option<Amount>,
     /// The total bytes sent aggregated by message type
     pub bytessent_per_msg: HashMap<String, u64>,
@@ -1094,7 +1094,7 @@ pub struct EstimateSmartFeeResult {
         default,
         rename = "feerate",
         skip_serializing_if = "Option::is_none",
-        with = "bitcoin::util::amount::serde::as_btc::opt"
+        with = "digibyte::util::amount::serde::as_dgb::opt"
     )]
     pub fee_rate: Option<Amount>,
     /// Errors encountered during processing.
@@ -1106,7 +1106,7 @@ pub struct EstimateSmartFeeResult {
 /// Models the result of "waitfornewblock", and "waitforblock"
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct BlockRef {
-    pub hash: bitcoin::BlockHash,
+    pub hash: digibyte::BlockHash,
     pub height: u64,
 }
 
@@ -1127,7 +1127,7 @@ pub struct GetDescriptorInfoResult {
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct WalletCreateFundedPsbtResult {
     pub psbt: String,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub fee: Amount,
     #[serde(rename = "changepos")]
     pub change_position: i32,
@@ -1160,7 +1160,7 @@ pub struct WalletCreateFundedPsbtOptions {
     #[serde(
         rename = "feeRate",
         skip_serializing_if = "Option::is_none",
-        with = "bitcoin::util::amount::serde::as_btc::opt"
+        with = "digibyte::util::amount::serde::as_dgb::opt"
     )]
     pub fee_rate: Option<Amount>,
     #[serde(rename = "subtractFeeFromOutputs", skip_serializing_if = "Vec::is_empty")]
@@ -1191,7 +1191,7 @@ pub struct GetChainTipsResultTip {
     /// Block height of the chain tip
     pub height: u64,
     /// Header hash of the chain tip
-    pub hash: bitcoin::BlockHash,
+    pub hash: digibyte::BlockHash,
     /// Length of the branch (number of blocks since the last common block)
     #[serde(rename = "branchlen")]
     pub branch_length: usize,
@@ -1235,10 +1235,10 @@ pub enum EstimateMode {
 
 /// A wrapper around bitcoin::SigHashType that will be serialized
 /// according to what the RPC expects.
-pub struct SigHashType(bitcoin::SigHashType);
+pub struct SigHashType(digibyte::SigHashType);
 
-impl From<bitcoin::SigHashType> for SigHashType {
-    fn from(sht: bitcoin::SigHashType) -> SigHashType {
+impl From<digibyte::SigHashType> for SigHashType {
+    fn from(sht: digibyte::SigHashType) -> SigHashType {
         SigHashType(sht)
     }
 }
@@ -1249,12 +1249,12 @@ impl serde::Serialize for SigHashType {
         S: serde::Serializer,
     {
         serializer.serialize_str(match self.0 {
-            bitcoin::SigHashType::All => "ALL",
-            bitcoin::SigHashType::None => "NONE",
-            bitcoin::SigHashType::Single => "SINGLE",
-            bitcoin::SigHashType::AllPlusAnyoneCanPay => "ALL|ANYONECANPAY",
-            bitcoin::SigHashType::NonePlusAnyoneCanPay => "NONE|ANYONECANPAY",
-            bitcoin::SigHashType::SinglePlusAnyoneCanPay => "SINGLE|ANYONECANPAY",
+            digibyte::SigHashType::All => "ALL",
+            digibyte::SigHashType::None => "NONE",
+            digibyte::SigHashType::Single => "SINGLE",
+            digibyte::SigHashType::AllPlusAnyoneCanPay => "ALL|ANYONECANPAY",
+            digibyte::SigHashType::NonePlusAnyoneCanPay => "NONE|ANYONECANPAY",
+            digibyte::SigHashType::SinglePlusAnyoneCanPay => "SINGLE|ANYONECANPAY",
         })
     }
 }
@@ -1263,7 +1263,7 @@ impl serde::Serialize for SigHashType {
 #[derive(Serialize, Clone, PartialEq, Eq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateRawTransactionInput {
-    pub txid: bitcoin::Txid,
+    pub txid: digibyte::Txid,
     pub vout: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sequence: Option<u32>,
@@ -1287,7 +1287,7 @@ pub struct FundRawTransactionOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lock_unspents: Option<bool>,
     #[serde(
-        with = "bitcoin::util::amount::serde::as_btc::opt",
+        with = "digibyte::util::amount::serde::as_dgb::opt",
         skip_serializing_if = "Option::is_none"
     )]
     pub fee_rate: Option<Amount>,
@@ -1306,7 +1306,7 @@ pub struct FundRawTransactionOptions {
 pub struct FundRawTransactionResult {
     #[serde(with = "::serde_hex")]
     pub hex: Vec<u8>,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub fee: Amount,
     #[serde(rename = "changepos")]
     pub change_position: i32,
@@ -1314,11 +1314,11 @@ pub struct FundRawTransactionResult {
 
 #[derive(Deserialize, Clone, PartialEq, Eq, Debug)]
 pub struct GetBalancesResultEntry {
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub trusted: Amount,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub untrusted_pending: Amount,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub immature: Amount,
 }
 
@@ -1339,7 +1339,7 @@ impl FundRawTransactionResult {
 #[derive(Serialize, Clone, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct SignRawTransactionInput {
-    pub txid: bitcoin::Txid,
+    pub txid: digibyte::Txid,
     pub vout: u32,
     pub script_pub_key: Script,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1347,7 +1347,7 @@ pub struct SignRawTransactionInput {
     #[serde(
         default,
         skip_serializing_if = "Option::is_none",
-        with = "bitcoin::util::amount::serde::as_btc::opt"
+        with = "digibyte::util::amount::serde::as_dgb::opt"
     )]
     pub amount: Option<Amount>,
 }
@@ -1358,7 +1358,7 @@ pub struct GetTxOutSetInfoResult {
     pub height: u64,
     /// The hash of the block at the tip of the chain
     #[serde(rename = "bestblock")]
-    pub best_block: bitcoin::BlockHash,
+    pub best_block: digibyte::BlockHash,
     /// The number of transactions with unspent outputs
     pub transactions: u64,
     /// The number of unspent transaction outputs
@@ -1371,7 +1371,7 @@ pub struct GetTxOutSetInfoResult {
     /// The estimated size of the chainstate on disk
     pub disk_size: u64,
     /// The total amount
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
     pub total_amount: Amount,
 }
 
@@ -1446,22 +1446,22 @@ pub struct ScanTxOutResult {
     pub tx_outs: Option<u64>,
     pub height: Option<u64>,
     #[serde(rename = "bestblock")]
-    pub best_block_hash: Option<bitcoin::BlockHash>,
+    pub best_block_hash: Option<digibyte::BlockHash>,
     pub unspents: Vec<Utxo>,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
-    pub total_amount: bitcoin::Amount,
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
+    pub total_amount: digibyte::Amount,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Utxo {
-    pub txid: bitcoin::Txid,
+    pub txid: digibyte::Txid,
     pub vout: u32,
-    pub script_pub_key: bitcoin::Script,
+    pub script_pub_key: digibyte::Script,
     #[serde(rename = "desc")]
     pub descriptor: String,
-    #[serde(with = "bitcoin::util::amount::serde::as_btc")]
-    pub amount: bitcoin::Amount,
+    #[serde(with = "digibyte::util::amount::serde::as_dgb")]
+    pub amount: digibyte::Amount,
     pub height: u64,
 }
 
