@@ -201,6 +201,32 @@ pub struct GetBlockResult {
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct GetBlockTxResult {
+    pub hash: digibyte::BlockHash,
+    pub confirmations: i32,
+    pub size: usize,
+    pub strippedsize: Option<usize>,
+    pub weight: usize,
+    pub height: usize,
+    pub version: i32,
+    #[serde(default, with = "::serde_hex::opt")]
+    pub version_hex: Option<Vec<u8>>,
+    pub merkleroot: digibyte::TxMerkleNode,
+    pub tx: Vec<GetRawTransactionResult>,
+    pub time: usize,
+    pub mediantime: Option<usize>,
+    pub nonce: u32,
+    pub bits: String,
+    pub difficulty: f64,
+    #[serde(with = "::serde_hex")]
+    pub chainwork: Vec<u8>,
+    pub n_tx: usize,
+    pub previousblockhash: Option<digibyte::BlockHash>,
+    pub nextblockhash: Option<digibyte::BlockHash>,
+}
+
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GetBlockHeaderResult {
     pub hash: digibyte::BlockHash,
     pub confirmations: i32,

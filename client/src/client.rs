@@ -332,7 +332,10 @@ pub trait RpcApi: Sized {
     fn get_block_info(&self, hash: &digibyte::BlockHash) -> Result<json::GetBlockResult> {
         self.call("getblock", &[into_json(hash)?, 1.into()])
     }
-    //TODO(stevenroose) add getblock_txs
+
+    fn get_block_info_tx(&self, hash: &digibyte::BlockHash) -> Result<json::GetBlockTxResult> {
+        self.call("getblock", &[into_json(hash)?, 2.into()])
+    }
 
     fn get_block_header(&self, hash: &digibyte::BlockHash) -> Result<BlockHeader> {
         let hex: String = self.call("getblockheader", &[into_json(hash)?, false.into()])?;
