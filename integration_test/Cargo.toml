@@ -5,6 +5,6 @@ authors = ["Steven Roose <steven@stevenroose.org>"]
 
 [dependencies]
 digibyte-rpc = { path = "../client" }
-digibyte = { version = "0.27.1", features = [ "use-serde", "rand" ] }
+digibyte = { version = "0.27.2", features = [ "use-serde", "rand" ] }
 lazy_static = "1.4.0"
 log = "0.4"
