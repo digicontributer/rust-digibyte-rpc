@@ -1,6 +1,6 @@
 [package]
 name = "digibyte-rpc"
-version = "0.13.2"
+version = "0.13.3"
 authors = [
     "Steven Roose <steven@stevenroose.org>",
     "Jean Pierre Dudey <jeandudey@hotmail.com>",
