@@ -1,6 +1,6 @@
 [package]
 name = "digibyte-rpc"
-version = "0.13.3"
+version = "0.13.4"
 authors = [
     "Steven Roose <steven@stevenroose.org>",
     "Jean Pierre Dudey <jeandudey@hotmail.com>",
@@ -18,7 +18,7 @@ name = "digibyte_rpc"
 path = "src/lib.rs"
 
 [dependencies]
-digibyte-rpc-json = { version = "0.13.3", path = "../json"}
+digibyte-rpc-json = { version = "0.13.4", path = "../json"}
 
 log = "0.4.5"
 jsonrpc = "0.11"
