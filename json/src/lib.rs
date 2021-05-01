@@ -194,6 +194,9 @@ pub struct GetBlockResult {
     pub difficulty: f64,
     #[serde(with = "::serde_hex")]
     pub chainwork: Vec<u8>,
+    pub pow_algo_id: i32,
+    pub pow_algo: String,
+    pub pow_hash: Vec<u8>,
     pub n_tx: usize,
     pub previousblockhash: Option<digibyte::BlockHash>,
     pub nextblockhash: Option<digibyte::BlockHash>,
@@ -220,6 +223,9 @@ pub struct GetBlockTxResult {
     pub difficulty: f64,
     #[serde(with = "::serde_hex")]
     pub chainwork: Vec<u8>,
+    pub pow_algo_id: i32,
+    pub pow_algo: String,
+    pub pow_hash: Vec<u8>,
     pub n_tx: usize,
     pub previousblockhash: Option<digibyte::BlockHash>,
     pub nextblockhash: Option<digibyte::BlockHash>,
@@ -349,6 +355,7 @@ pub struct GetRawTransactionResult {
     pub vsize: usize,
     pub version: u32,
     pub locktime: u32,
+    pub weight: usize,
     pub vin: Vec<GetRawTransactionResultVin>,
     pub vout: Vec<GetRawTransactionResultVout>,
     pub blockhash: Option<digibyte::BlockHash>,

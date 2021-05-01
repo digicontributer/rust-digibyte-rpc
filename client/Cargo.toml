@@ -18,7 +18,7 @@ name = "digibyte_rpc"
 path = "src/lib.rs"
 
 [dependencies]
-digibyte-rpc-json = { version = "0.13.2", path = "../json"}
+digibyte-rpc-json = { version = "0.13.3", path = "../json"}
 
 log = "0.4.5"
 jsonrpc = "0.11"
